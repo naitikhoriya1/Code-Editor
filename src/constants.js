@@ -5,14 +5,69 @@ export const LANGUAGE_VERSIONS = {
   java: "15.0.2",
   csharp: "6.12.0",
   php: "8.2.3",
+  "c++": "10.2.0",
 };
 
 export const CODE_SNIPPETS = {
-  javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,
-  typescript: `\ntype Params = {\n\tname: string;\n}\n\nfunction greet(data: Params) {\n\tconsole.log("Hello, " + data.name + "!");\n}\n\ngreet({ name: "Alex" });\n`,
-  python: `\ndef greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("Alex")\n`,
-  java: `\npublic class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n`,
-  csharp:
-    'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
-  php: "<?php\n\n$name = 'Alex';\necho $name;\n",
+  javascript: `// Example with user input
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+readline.question('What is your name? ', name => {
+  console.log(\`Hello, \${name}!\`);
+  readline.close();
+});`,
+  typescript: `// Example with user input
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+readline.question('What is your name? ', (name: string) => {
+  console.log(\`Hello, \${name}!\`);
+  readline.close();
+});`,
+  python: `# Example with user input
+name = input("What is your name? ")
+print(f"Hello, {name}!")`,
+  java: `import java.util.Scanner;
+
+public class Main {
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("What is your name? ");
+    String name = scanner.nextLine();
+    System.out.println("Hello, " + name + "!");
+    scanner.close();
+  }
+}`,
+  csharp: `using System;
+
+namespace UserInputExample
+{
+  class Program { 
+    static void Main(string[] args) {
+      Console.Write("What is your name? ");
+      string name = Console.ReadLine();
+      Console.WriteLine($"Hello, {name}!");
+    }
+  }
+}`,
+  php: `<?php
+echo "What is your name? ";
+$name = trim(fgets(STDIN));
+echo "Hello, " . $name . "!\n";
+?>`,
+  "c++": `#include <iostream>
+#include <string>
+
+int main() {
+  std::string name;
+  std::cout << "What is your name? ";
+  std::getline(std::cin, name);
+  std::cout << "Hello, " << name << "!" << std::endl;
+  return 0;
+}`,
 };

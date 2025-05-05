@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Box, Button, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Text,
+  useToast,
+  Textarea,
+  FormControl,
+  FormLabel,
+} from "@chakra-ui/react";
 import { executeCode } from "../api";
 
 const Output = ({ editorRef, language }) => {
@@ -7,13 +15,18 @@ const Output = ({ editorRef, language }) => {
   const [output, setOutput] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [userInput, setUserInput] = useState("");
 
   const runCode = async () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
     try {
       setIsLoading(true);
-      const { run: result } = await executeCode(language, sourceCode);
+      const { run: result } = await executeCode(
+        language,
+        sourceCode,
+        userInput
+      );
       setOutput(result.output.split("\n"));
       result.stderr ? setIsError(true) : setIsError(false);
     } catch (error) {
@@ -34,6 +47,18 @@ const Output = ({ editorRef, language }) => {
       <Text mb={2} fontSize="lg">
         Output
       </Text>
+      <FormControl mb={4}>
+        <FormLabel>User Input (stdin)</FormLabel>
+        <Textarea
+          placeholder="Enter input for your program here..."
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          size="sm"
+          mb={2}
+          bg="#1E1E1E"
+          borderColor="#333"
+        />
+      </FormControl>
       <Button
         variant="outline"
         colorScheme="green"
@@ -44,12 +69,14 @@ const Output = ({ editorRef, language }) => {
         Run Code
       </Button>
       <Box
-        height="75vh"
+        height="60vh"
         p={2}
         color={isError ? "red.400" : ""}
         border="1px solid"
         borderRadius={4}
         borderColor={isError ? "red.500" : "#333"}
+        overflowY="auto"
+        bg="#1E1E1E"
       >
         {output
           ? output.map((line, i) => <Text key={i}>{line}</Text>)
