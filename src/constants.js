@@ -8,6 +8,50 @@ export const LANGUAGE_VERSIONS = {
   "c++": "10.2.0",
 };
 
+// Examples with common coding errors for testing error correction
+export const ERROR_PRONE_CODE = {
+  javascript: `// This has a syntax error
+function calculateSum(a, b) {
+  let result = a + b
+  console.log("The sum is: " + result
+  return result;
+}
+
+calculateSum(5, 10);`,
+
+  python: `# This has an indentation error
+def calculate_sum(a, b):
+    result = a + b
+print("The sum is:", result)  # Wrong indentation
+    return result
+
+calculate_sum(5, 10)`,
+
+  java: `// This has a missing semicolon
+public class Main {
+  public static void main(String[] args) {
+    int a = 5;
+    int b = 10
+    int sum = a + b;
+    System.out.println("The sum is: " + sum);
+  }
+}`,
+
+  "c++": `// This has a missing closing bracket
+#include <iostream>
+
+int main() {
+  int a = 5;
+  int b = 10;
+  
+  if (a < b) {
+    std::cout << "a is less than b" << std::endl;
+  
+  std::cout << "The sum is: " << a + b << std::endl;
+  return 0;
+}`,
+};
+
 export const CODE_SNIPPETS = {
   javascript: `// Example with user input
 const readline = require('readline').createInterface({
