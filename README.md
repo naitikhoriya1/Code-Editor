@@ -39,3 +39,32 @@ npm install
 
 # Start the development server
 npm start
+
+
+🔮 Future Enhancements
+Save and manage user projects.
+
+Add real-time collaboration (like Google Docs).
+
+Integrated terminal and GitHub support.
+
+User authentication and code sharing.
+
+🤝 Contributing
+Contributions, suggestions, and feedback are welcome! Feel free to fork the repo and create a pull request.
+
+📄 License
+This project is licensed under the MIT License.
+
+🔗 References
+React Documentation
+
+Chakra UI Docs
+
+Piston API
+
+Monaca Editor
+
+OpenAI API
+
+
