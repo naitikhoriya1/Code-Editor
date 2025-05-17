@@ -115,15 +115,36 @@ const CodeEditor = () => {
     setCorrectedCode("");
 
     try {
-      console.log("Sending code for optimization:", value);
+      console.log("Starting code optimization for language:", language);
+      console.log("Original code:", value);
 
       // Create the prompt for code optimization
       const prompt = createOptimizationPrompt(value, language);
+      console.log("Generated optimization prompt:", prompt);
 
       // Call the Gemini API
       const improvedCode = await callGeminiAPI(prompt);
+      console.log("Received optimized code:", improvedCode);
 
-      console.log("Successfully received improved code");
+      if (!improvedCode || improvedCode.trim() === "") {
+        throw new Error("Received empty response from optimization API");
+      }
+
+      // Check if the optimized code is significantly different
+      if (improvedCode.trim() === value.trim()) {
+        console.log(
+          "Optimized code is identical to original - adding comments only"
+        );
+        toast({
+          title: "Code already optimized",
+          description:
+            "The code is already well-structured. Only comments were added.",
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+
       setCorrectedCode(improvedCode);
       toast({
         title: "Code optimization complete",
@@ -133,7 +154,7 @@ const CodeEditor = () => {
         isClosable: true,
       });
     } catch (err) {
-      console.error("Error getting improved code:", err);
+      console.error("Error during code optimization:", err);
       toast({
         title: "Error optimizing code",
         description:

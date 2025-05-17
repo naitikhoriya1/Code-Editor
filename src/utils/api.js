@@ -53,7 +53,14 @@ export const callGeminiAPI = async (prompt) => {
       data.candidates[0].content.parts.length > 0 &&
       data.candidates[0].content.parts[0].text
     ) {
-      return data.candidates[0].content.parts[0].text;
+      // Clean the response text by removing language markers
+      const responseText = data.candidates[0].content.parts[0].text;
+      const cleanText = responseText
+        .replace(/```\w*\n?/g, "") // Remove opening language markers
+        .replace(/```\n?/g, "") // Remove closing markers
+        .trim(); // Remove extra whitespace
+
+      return cleanText;
     } else {
       console.error("Invalid API response structure:", data);
       throw new Error("API response missing expected data structure");
@@ -72,7 +79,13 @@ export const callGeminiAPI = async (prompt) => {
  * @returns {string} - The prompt for the API
  */
 export const createErrorCorrectionPrompt = (code, error, language) => {
-  return `Fix the following ${language} code that has this error: "${error}"\n\nCode:\n${code}\n\nProvide ONLY the corrected code without explanations or markdown.`;
+  // Remove language markers if present
+  const cleanCode = code
+    .replace(/```\w*\n?/g, "")
+    .replace(/```\n?/g, "")
+    .trim();
+
+  return `Fix the following ${language} code that has this error: "${error}"\n\nCode:\n${cleanCode}\n\nProvide ONLY the corrected code without explanations or markdown.`;
 };
 
 /**
@@ -82,5 +95,23 @@ export const createErrorCorrectionPrompt = (code, error, language) => {
  * @returns {string} - The prompt for the API
  */
 export const createOptimizationPrompt = (code, language) => {
-  return `Review and optimize the following ${language} code. If there are any errors, fix them. If the code is already correct, improve its efficiency, readability, or add helpful comments.\n\nCode:\n${code}\n\nProvide ONLY the improved code without explanations or markdown.`;
+  // Remove language markers if present
+  const cleanCode = code
+    .replace(/```\w*\n?/g, "")
+    .replace(/```\n?/g, "")
+    .trim();
+
+  return `Optimize the following ${language} code with these specific criteria:
+1. Maintain the exact same functionality
+2. Improve code structure and readability
+3. Add helpful comments explaining the code
+4. Follow best practices for ${language}
+5. If the code is already well-structured, only add comments
+6. Keep the same variable names unless they can be made more descriptive
+7. Ensure proper error handling and resource management
+
+Code to optimize:
+${cleanCode}
+
+Provide ONLY the optimized code without explanations or markdown. If the code is already optimal, return it with added comments.`;
 };
