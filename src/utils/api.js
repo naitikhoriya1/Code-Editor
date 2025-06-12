@@ -101,17 +101,17 @@ export const createOptimizationPrompt = (code, language) => {
     .replace(/```\n?/g, "")
     .trim();
 
-  return `Optimize the following ${language} code with these specific criteria:
-1. Maintain the exact same functionality
-2. Improve code structure and readability
-3. Add helpful comments explaining the code
-4. Follow best practices for ${language}
-5. If the code is already well-structured, only add comments
-6. Keep the same variable names unless they can be made more descriptive
-7. Ensure proper error handling and resource management
+  return `Improve the following ${language} code while maintaining its exact logic and approach. Focus on:
+1. Code formatting and indentation
+2. Variable naming consistency
+3. Adding 1-2 comments for the main logic
+4. Removing any redundant code
+5. Keeping the same solution approach and algorithm
 
-Code to optimize:
+Important: Do not suggest alternative solutions or change the core logic. Only improve the existing code structure.
+
+Code to improve:
 ${cleanCode}
 
-Provide ONLY the optimized code without explanations or markdown. If the code is already optimal, return it with added comments.`;
+Provide the improved code with minimal comments. Do not add explanations or markdown.`;
 };

@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Box, Text, Button, Spinner, useToast } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import { callGeminiAPI, createErrorCorrectionPrompt } from "../utils/api";
 
 const ErrorCorrection = ({ error, code, language }) => {
   const [correctedCode, setCorrectedCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
 
   // Auto-fetch corrected code when an error is detected
   useEffect(() => {
@@ -32,13 +30,7 @@ const ErrorCorrection = ({ error, code, language }) => {
       setCorrectedCode(result);
     } catch (err) {
       console.error("Error fetching corrected code:", err);
-      toast({
-        title: "Error",
-        description: err.message || "Failed to get correction suggestions",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      alert(err.message || "Failed to get correction suggestions");
     } finally {
       setIsLoading(false);
     }
@@ -56,33 +48,38 @@ const ErrorCorrection = ({ error, code, language }) => {
   if (!error) return null;
 
   return (
-    <Box
-      mt={4}
-      borderWidth="1px"
-      borderRadius="lg"
-      p={4}
-      bg="gray.800"
-      color="white"
-      w="100%"
-    >
-      <Text color="red.300" mb={2} fontWeight="bold">
-        Code Error Detected
-      </Text>
-      <Text color="red.200" mb={3} fontSize="sm">
-        {error}
-      </Text>
+    <div className="mt-4 card w-full">
+      <p className="text-red-400 mb-2 font-bold">Code Error Detected</p>
+      <p className="text-red-300 mb-3 text-sm">{error}</p>
 
       {isLoading ? (
-        <Box display="flex" alignItems="center" my={3}>
-          <Spinner size="sm" mr={2} />
-          <Text>Generating correction...</Text>
-        </Box>
+        <div className="flex items-center my-3">
+          <svg
+            className="animate-spin h-5 w-5 mr-2 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>Generating correction...</span>
+        </div>
       ) : correctedCode ? (
         <>
-          <Text fontWeight="bold" mb={2} color="green.300">
-            Corrected Code:
-          </Text>
-          <Box borderWidth="1px" borderRadius="md" mb={3}>
+          <p className="font-bold mb-2 text-green-400">Corrected Code:</p>
+          <div className="border border-gray-700 rounded-md mb-3">
             <Editor
               height="200px"
               language={language}
@@ -95,22 +92,17 @@ const ErrorCorrection = ({ error, code, language }) => {
               }}
               theme="vs-dark"
             />
-          </Box>
-          <Button
-            colorScheme="green"
-            size="sm"
-            onClick={applyCorrection}
-            mr={2}
-          >
+          </div>
+          <button className="btn btn-success mr-2" onClick={applyCorrection}>
             Apply Correction
-          </Button>
+          </button>
         </>
       ) : (
-        <Button colorScheme="blue" size="sm" onClick={fetchCorrectedCode}>
+        <button className="btn btn-primary" onClick={fetchCorrectedCode}>
           Try Again
-        </Button>
+        </button>
       )}
-    </Box>
+    </div>
   );
 };
 

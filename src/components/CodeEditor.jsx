@@ -1,17 +1,11 @@
 import { useRef, useState, useEffect } from "react";
-import {
-  Box,
-  HStack,
-  VStack,
-  Button,
-  useToast,
-  Tooltip,
-} from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS, ERROR_PRONE_CODE } from "../constants";
 import Output from "./Output";
 import ErrorCorrection from "./ErrorCorrection";
+import Modal from "./Modal";
+import Toast from "./Toast";
 import { callGeminiAPI, createOptimizationPrompt } from "../utils/api";
 
 const CodeEditor = () => {
@@ -20,10 +14,23 @@ const CodeEditor = () => {
   const [language, setLanguage] = useState("javascript");
   const [error, setError] = useState(null);
   const [monaco, setMonaco] = useState(null);
-  const toast = useToast();
   const [isCheckingCode, setIsCheckingCode] = useState(false);
   const [isGeneratingCorrection, setIsGeneratingCorrection] = useState(false);
   const [correctedCode, setCorrectedCode] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  const showToast = (message, type = "info") => {
+    setToast({ show: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast({ show: false, message: "", type: "info" });
+  };
 
   useEffect(() => {
     setValue(CODE_SNIPPETS[language]);
@@ -37,19 +44,14 @@ const CodeEditor = () => {
       setValue(correctedCode);
       setError(null);
       setCorrectedCode("");
-      toast({
-        title: "Code corrected",
-        description: "The code has been automatically fixed.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      setIsModalOpen(false);
+      showToast("Code has been automatically fixed.", "success");
     };
 
     return () => {
       delete window.applyCorrectedCode;
     };
-  }, [toast]);
+  }, []);
 
   // Check for errors whenever code changes, but with a debounce
   useEffect(() => {
@@ -99,14 +101,10 @@ const CodeEditor = () => {
     if (ERROR_PRONE_CODE[language]) {
       setValue(ERROR_PRONE_CODE[language]);
       setCorrectedCode("");
-      toast({
-        title: "Error-prone code loaded",
-        description:
-          "This code contains errors that will be automatically corrected.",
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(
+        "Error-prone code loaded. This code contains errors that will be automatically corrected.",
+        "info"
+      );
     }
   };
 
@@ -135,35 +133,25 @@ const CodeEditor = () => {
         console.log(
           "Optimized code is identical to original - adding comments only"
         );
-        toast({
-          title: "Code already optimized",
-          description:
-            "The code is already well-structured. Only comments were added.",
-          status: "info",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToast(
+          "The code is already well-structured. Only comments were added.",
+          "info"
+        );
       }
 
       setCorrectedCode(improvedCode);
-      toast({
-        title: "Code optimization complete",
-        description: "Review the suggested improvements below.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      setIsModalOpen(true);
+      showToast(
+        "Code optimization complete. Review the suggested improvements below.",
+        "success"
+      );
     } catch (err) {
       console.error("Error during code optimization:", err);
-      toast({
-        title: "Error optimizing code",
-        description:
-          err.message ||
+      showToast(
+        err.message ||
           "Failed to generate code improvements. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+        "error"
+      );
     } finally {
       setIsGeneratingCorrection(false);
     }
@@ -173,42 +161,63 @@ const CodeEditor = () => {
     if (correctedCode) {
       setValue(correctedCode);
       setCorrectedCode("");
-      toast({
-        title: "Code applied",
-        description: "The improved code has been applied.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      setIsModalOpen(false);
+      showToast("The improved code has been applied.", "success");
     }
   };
 
   return (
-    <Box shadow="md">
-      <HStack spacing={4} alignItems="flex-start">
-        <VStack w="60%" alignItems="flex-start" spacing={4}>
-          <HStack spacing={4} w="100%">
+    <div className="shadow-md">
+      <div className="flex items-start space-x-4">
+        <div className="w-3/5 flex flex-col space-y-4">
+          <div className="flex space-x-4 w-full">
             <LanguageSelector language={language} onSelect={onSelect} />
-            <Button
-              size="sm"
-              colorScheme="red"
+            <button
+              className="btn btn-danger"
               onClick={loadErrorProneCode}
               title="Load code with errors for testing"
             >
               Test Error Correction
-            </Button>
-            <Tooltip label="Generate improved version of your code">
-              <Button
-                size="sm"
-                colorScheme="teal"
+            </button>
+            <div className="relative group">
+              <button
+                className="btn btn-primary"
                 onClick={generateCorrectedCode}
-                isLoading={isGeneratingCorrection}
-                loadingText="Generating"
+                disabled={isGeneratingCorrection}
               >
-                Optimize Code
-              </Button>
-            </Tooltip>
-          </HStack>
+                {isGeneratingCorrection ? (
+                  <span className="flex items-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Generating...
+                  </span>
+                ) : (
+                  "Optimize Code"
+                )}
+              </button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                Generate improved version of your code
+              </div>
+            </div>
+          </div>
           <Editor
             options={{
               minimap: {
@@ -230,48 +239,42 @@ const CodeEditor = () => {
           {error && !isCheckingCode && (
             <ErrorCorrection error={error} code={value} language={language} />
           )}
-          {correctedCode && !error && (
-            <Box
-              mt={4}
-              borderWidth="1px"
-              borderRadius="lg"
-              p={4}
-              bg="gray.800"
-              color="white"
-              w="100%"
-            >
-              <HStack justifyContent="space-between" mb={2}>
-                <Box fontWeight="bold" color="teal.300">
-                  Optimized Code:
-                </Box>
-                <Button
-                  colorScheme="teal"
-                  size="sm"
-                  onClick={applyGeneratedCode}
-                >
-                  Apply Changes
-                </Button>
-              </HStack>
-              <Box borderWidth="1px" borderRadius="md">
-                <Editor
-                  height="200px"
-                  language={language}
-                  value={correctedCode}
-                  options={{
-                    readOnly: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                    fontSize: 14,
-                  }}
-                  theme="vs-dark"
-                />
-              </Box>
-            </Box>
-          )}
-        </VStack>
+        </div>
         <Output editorRef={editorRef} language={language} />
-      </HStack>
-    </Box>
+      </div>
+
+      {/* Optimized Code Modal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold text-teal-400">Optimized Code</h2>
+            <button className="btn btn-success" onClick={applyGeneratedCode}>
+              Apply Changes
+            </button>
+          </div>
+          <div className="border border-gray-700 rounded-md">
+            <Editor
+              height="60vh"
+              language={language}
+              value={correctedCode}
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                fontSize: 14,
+              }}
+              theme="vs-dark"
+            />
+          </div>
+        </div>
+      </Modal>
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
+    </div>
   );
 };
+
 export default CodeEditor;
