@@ -1,70 +1,128 @@
-# 🚀 AI-Powered Online Code Editor
+# React Code Editor
 
-A modern, web-based code editor built with **React**, **Monaca Editor**, **Chakra UI**, and the **Piston API**, enhanced with **AI-powered autocomplete suggestions** and **smart code correction**. This tool allows users to write, compile, and execute code in multiple programming languages directly from their browser — no installations required.
+A modern, feature-rich code editor built with React, Monaco Editor, and TailwindCSS. This project provides a sleek and intuitive interface for writing and editing code with syntax highlighting and other advanced features.
 
----
+## 🚀 Features
 
-## ✨ Features
-
-- 🔤 **Multi-language support** (Python, Java, C++, JavaScript, etc.)
-- ⚙️ **Real-time code execution** via Piston API
-- 💡 **AI-based autocomplete code suggestions**
-- 🧠 **Smart error detection & correction suggestions**
-- 🖥️ **Responsive UI** using Chakra UI
-- 🌐 **Cloud-based** — no local setup required
-
----
+- Modern and responsive UI with dark mode support
+- Syntax highlighting for multiple programming languages
+- File management system
+- Customizable editor settings
+- Sidebar navigation with multiple tools
+- Share and collaboration features
+- Settings panel for customization
 
 ## 🛠️ Tech Stack
 
-| Technology      | Role                            |
-|----------------|----------------------------------|
-| React           | Frontend framework               |
-| Monaca Editor   | Cloud-based development environment |
-| Chakra UI       | Component library for styling    |
-| Piston API      | Code compilation & execution     |
-| OpenAI API / Codeium | AI for autocomplete & correction |
+- **Frontend Framework:** React 18
+- **Code Editor:** Monaco Editor (VS Code's editor)
+- **Styling:** TailwindCSS
+- **Build Tool:** Vite
+- **Package Manager:** npm
+- **HTTP Client:** Axios
 
----
+## 📁 Project Structure
 
-## 📦 Installation
+```
+react-code-editor/
+├── public/              # Static assets
+├── src/                 # Source files
+│   ├── components/      # React components
+│   │   └── CodeEditor/  # Main code editor component
+│   │   └── App.jsx         # Main application component
+│   └── main.jsx        # Application entry point
+├── index.html          # HTML template
+├── package.json        # Project dependencies and scripts
+├── tailwind.config.js  # TailwindCSS configuration
+├── postcss.config.js   # PostCSS configuration
+└── vite.config.js      # Vite configuration
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/react-code-editor.git
+   cd react-code-editor
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Building for Production
+
+To create a production build:
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/ai-online-code-editor.git
-cd ai-online-code-editor
+npm run build
+```
 
-# Install dependencies
-npm install
+To preview the production build:
 
-# Start the development server
-npm start
+```bash
+npm run preview
+```
 
+## 🎨 UI Components
 
-🔮 Future Enhancements
-Save and manage user projects.
+The application features a modern UI with the following main components:
 
-Add real-time collaboration (like Google Docs).
+- **Header/Navbar:** Contains File, Settings, and Share buttons
+- **Sidebar:** Navigation icons for various tools and features
+- **Main Editor:** Monaco Editor instance with syntax highlighting
+- **Settings Panel:** Customizable editor settings
 
-Integrated terminal and GitHub support.
+## 🛠️ Development
 
-User authentication and code sharing.
+### Available Scripts
 
-🤝 Contributing
-Contributions, suggestions, and feedback are welcome! Feel free to fork the repo and create a pull request.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-📄 License
-This project is licensed under the MIT License.
+### Code Style
 
-🔗 References
-React Documentation
+The project uses ESLint for code linting. Run the linter with:
 
-Chakra UI Docs
+```bash
+npm run lint
+```
 
-Piston API
+## 🤝 Contributing
 
-Monaca Editor
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-OpenAI API
+## 📝 License
 
+This project is licensed under the MIT License - see the LICENSE file for details.
 
+## 🙏 Acknowledgments
+
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+- [React](https://reactjs.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/)
